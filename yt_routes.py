@@ -1,10 +1,10 @@
 from flask import Flask, Blueprint, jsonify
 import requests
 from googleapiclient.discovery import build
-import dotenv
-
+import os
 ytroute  = Blueprint('ytroute', __name__)
-API_KEY = dotemv.get('YOUTUBE_API_KEY')
+API_KEY = os.getenv('YOUTUBE_API_KEY')
+
 @ytroute.route('/youtube/videos/<channel_id>')
 def get_youtube_videos(channel_id):
     endpoint = 'https://www.googleapis.com/youtube/v3/search'
@@ -35,15 +35,14 @@ def get_youtube_videos(channel_id):
 @ytroute.route('/youtube/get_channel_id/<channel_name>')
 def get_channel_id(channel_name):
     youtube = build('youtube', 'v3', developerKey=API_KEY)
-    
     search_response = youtube.search().list(
         q=channel_name,
         type='channel',
         part='id'
     ).execute()
-
     for search_result in search_response.get('items', []):
-        if search_result['id']['kind'] == 'youtube#channel':           
+        if search_result['id']['kind'] == 'youtube#channel': 
+            print(search_result['id']['channelId'])          
             return jsonify(search_result['id']['channelId'])
 
     return jsonify('No channel found')

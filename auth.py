@@ -166,10 +166,3 @@ def logout(current_user):
     except jwt.InvalidTokenError:
         return jsonify({'error': 'Invalid token'}), 400
 
-#a protected route
-@authRoute.route('/protected')
-@token_required
-def protected(current_user):
-    return jsonify({'message': 'This is a protected route'}), 200
-
-    
