@@ -1,0 +1,21 @@
+from flask import Flask
+from flask_cors import CORS
+from flask_login import LoginManager
+from bson import ObjectId
+
+if __name__ == '__main__':
+    from insta_routes import instroute
+    from yt_routes import ytroute
+    from auth import authRoute
+    
+    app = Flask(__name__)
+    login_manager = LoginManager(app)
+    login_manager.login_view = 'authRoute.login'
+    CORS(app, origins="*")
+    app.register_blueprint(instroute)
+    app.register_blueprint(ytroute)
+    app.register_blueprint(authRoute)
+
+    app.run(debug=True)
+
+
