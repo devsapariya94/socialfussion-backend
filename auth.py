@@ -156,11 +156,11 @@ def logout(current_user):
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
         }
-        new_token = jwt.encode(payload, APP_SECRET_KEY, algorithm='HS256')
+        
 
         logger.info(f'User {current_user} logged out')
 
-        return jsonify({'message': 'User logged out', 'new_token': new_token}), 200
+        return jsonify({'message': 'User logged out'}), 200
     except jwt.ExpiredSignatureError:
         return jsonify({'error': 'Token has already expired'}), 400
     except jwt.InvalidTokenError:
