@@ -172,3 +172,44 @@ def all_post(current_user):
     print(main)
     return jsonify({'all_posts': main}), 200
 
+
+@protectedRoute.route('/instagram/posts', methods=['GET'])
+@token_required
+def instagram_posts(current_user):
+    instagram_posts = db['instagram_posts']
+    insta_following = db['instagram_following']
+
+    all_instagram_posts = []
+    for user in insta_following.find({'user_id': current_user}):
+        posts = instagram_posts.find({'username': user['username']})
+        for post in posts:
+            if isinstance(post['timestamp'], str):
+                post['timestamp'] = datetime.strptime(post['timestamp'], "%Y-%m-%d %H:%M:%S")
+            all_instagram_posts.append(post)
+
+    all_instagram_posts.sort(key=lambda x: x['timestamp'], reverse=True)
+    main =[]
+    for post in all_instagram_posts:
+        main.append(post.get("shortcode"))
+    return jsonify({'all_instagram_posts': main}), 200
+
+
+@protectedRoute.route('/youtube/videos', methods=['GET'])
+@token_required
+def youtube_videos(current_user):
+    youtube_videos = db['youtube_videos']
+    youtube_following = db['youtube_following']
+
+    all_youtube_videos = []
+    for user in youtube_following.find({'user_id': current_user}):
+        videos = youtube_videos.find({'channel_id': user['channel_id']})
+        for video in videos:
+            if isinstance(video['timestamp'], str):
+                video['timestamp'] = datetime.strptime(video['timestamp'], "%Y-%m-%d %H:%M:%S")
+            all_youtube_videos.append(video)
+    main =[]
+    for post in all_youtube_videos:
+        main.append(post.get("video_id"))
+    all_youtube_videos.sort(key=lambda x: x['timestamp'], reverse=True)
+    return jsonify({'all_youtube_videos': main}), 200
+
