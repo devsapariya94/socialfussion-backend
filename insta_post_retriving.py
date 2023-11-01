@@ -13,8 +13,8 @@ MONGO_DB = config('MONGO_DB')
 
 # Define a function to run the scraping and updating process
 def scrape_and_update():
-    # client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
+    client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+    # client = pymongo.MongoClient('mongodb://localhost:27017/')
     db_name = MONGO_DB
     db = client.get_database(db_name)
 

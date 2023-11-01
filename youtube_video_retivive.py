@@ -12,8 +12,8 @@ YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')
 
 # Define a function to run the scraping and updating process
 def get_yt_videos():
-    # client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
-    client = pymongo.MongoClient('mongodb://localhost:27017/')
+    client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+    # client = pymongo.MongoClient('mongodb://localhost:27017/')
     db_name = MONGO_DB
     db = client.get_database(db_name)
 

@@ -21,8 +21,8 @@ YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 # Setup MongoDB connection and authenticate
 
 # client = MongoClient('localhost', 27017)
-# client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
-client = pymongo.MongoClient('mongodb://localhost:27017/')
+client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+# client = pymongo.MongoClient('mongodb://localhost:27017/')
 db_name= MONGO_DB
 db = client.get_database(db_name)
 
