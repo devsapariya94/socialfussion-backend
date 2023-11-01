@@ -7,6 +7,8 @@ import os
 import instaloader
 import logging
 from googleapiclient.discovery import build
+from datetime import datetime
+
 protectedRoute = Blueprint('protectedRoute', __name__)
 
 
@@ -19,7 +21,8 @@ YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
 # Setup MongoDB connection and authenticate
 
 # client = MongoClient('localhost', 27017)
-client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+# client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+client = pymongo.MongoClient('mongodb://localhost:27017/')
 db_name= MONGO_DB
 db = client.get_database(db_name)
 
@@ -120,4 +123,52 @@ def youtube_following(current_user):
         return jsonify({'message': 'Youtube user added to following'}), 200
     except Exception as e:
         return jsonify({'error': 'Failed to add YouTube user to following'}), 400
+
+@protectedRoute.route('/all', methods=['GET'])
+@token_required
+def all_post(current_user):
+    instagram_posts = db['instagram_posts']
+    youtube_videos = db['youtube_videos']
+    insta_following = db['instagram_following']
+    youtube_following = db['youtube_following']
+
+    # Get all the Instagram posts of the users the current user is following
+    all_instagram_posts = []
+    for user in insta_following.find({'user_id': current_user}):
+        posts = instagram_posts.find({'username': user['username']})
+        for post in posts:
+            if isinstance(post['timestamp'], str):
+                post['timestamp'] = datetime.strptime(post['timestamp'], "%Y-%m-%d %H:%M:%S")
+            all_instagram_posts.append(post)
+
+    # Get all the YouTube videos of the users the current user is following
+    all_youtube_videos = []
+    for user in youtube_following.find({'user_id': current_user}):
+        videos = youtube_videos.find({'channel_id': user['channel_id']})
+        for video in videos:
+            if isinstance(video['timestamp'], str):
+                video['timestamp'] = datetime.strptime(video['timestamp'], "%Y-%m-%d %H:%M:%S")
+            all_youtube_videos.append(video)
+
+    # Combine the two lists and sort by timestamp
+    all_posts = []
+    for post in all_instagram_posts:
+        all_posts.append(['instagram', post])
+    for post in all_youtube_videos:
+        all_posts.append(['youtube', post])
+    
+    all_posts.sort(key=lambda x: x[1]['timestamp'], reverse=True)
+    #send the [["instagrm",shortcode],["youtube","video_id"]]
+    main =[]
+    for post in all_posts:
+        print("***********************")
+        print(type(post))
+        print(post)
+        print("*********************")
+        if post[0]=="instagram":
+            main.append(["instagram",post[1].get("shortcode")])
+        if post[0]=="youtube":
+            main.append(["youtube",post[1].get("video_id")])
+    print(main)
+    return jsonify({'all_posts': main}), 200
 
