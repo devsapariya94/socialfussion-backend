@@ -8,6 +8,9 @@ import instaloader
 import logging
 from googleapiclient.discovery import build
 from datetime import datetime
+from youtube_video_retivive import scrape_and_update
+from insta_post_retriving import scrape_data
+import threading
 
 protectedRoute = Blueprint('protectedRoute', __name__)
 
@@ -30,6 +33,8 @@ db = client.get_database(db_name)
 blacklist_token = db['blacklist_token']
 instagram_following = db['instagram_following']
 youtube_following = db['youtube_following']
+youtube_creators = db['youtube_creators']
+instagram_creators = db['instagram_creators']
 
 # setup logger
 logger = logging.getLogger('follow_unfollow_logger')
@@ -78,6 +83,8 @@ def insta_following(current_user):
     username = request_data['username']
     #check if user exists
     try:
+        print("1")
+        print(username)
         loader = instaloader.Instaloader()
         profile = instaloader.Profile.from_username(loader.context, username)
         # add to the database
@@ -86,8 +93,16 @@ def insta_following(current_user):
         if instagram_following.find_one({'username': username, 'user_id': current_user}):
             return jsonify({'error': 'User is already following'}), 400
         
-
+        print("2")
         instagram_following.insert_one({'username': username, 'user_id': current_user})
+        #if username not in instagram_creators then add it
+        if not instagram_creators.find_one({'username': username}): 
+            instagram_creators.insert_one({'username': username})
+        print("3")
+        #start the thread to scrape the posts
+        # thread = threading.Thread(target=scrape_data, args=(username,))
+        # thread.start()
+
         logger.info(f'User {current_user} added {username} to instagram following')
         return jsonify({'message': 'Instagram user added to following'}), 200
 
@@ -119,7 +134,16 @@ def youtube_following(current_user):
             return jsonify({'error': 'User is already following'}), 400
 
         youtube_following.insert_one({'username': channel_name, 'user_id': current_user, 'channel_id': channel_id})
+
+        #if username not in youtube_creators then add it
+        if not youtube_creators.find_one({'channel_id': channel_id}): 
+            youtube_creators.insert_one({'channel_id': channel_id})
+            
         logger.info(f'User {current_user} added {channel_name} to youtube following')
+        #start the thread to scrape the videos
+        # thread = threading.Thread(target=scrape_and_update)
+        # thread.start()
+
         return jsonify({'message': 'Youtube user added to following'}), 200
     except Exception as e:
         return jsonify({'error': 'Failed to add YouTube user to following'}), 400

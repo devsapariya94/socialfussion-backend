@@ -11,25 +11,25 @@ MONGO_DB = config('MONGO_DB')
 YOUTUBE_API_KEY = config('YOUTUBE_API_KEY')
 
 # Define a function to run the scraping and updating process
-def get_yt_videos():
+def scrape_and_update():
     client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
     # client = pymongo.MongoClient('mongodb://localhost:27017/')
     db_name = MONGO_DB
     db = client.get_database(db_name)
 
     youtube_videos = db['youtube_videos']
-    youtube_following = db['youtube_following']
+    youtube_creators = db['youtube_creators']
 
-    get_all_youtuber_channel = youtube_following.find({}, {'channel_id': 1})
+    get_all_youtuber_channel = youtube_creators.find({}, {'channel_id': 1})
 
     print(1)
     for channel in get_all_youtuber_channel:
         try:
             print(2)
-            latest_video = youtube_following.find_one({'channel_id': channel['channel_id']}, sort=[('publishedAt', pymongo.DESCENDING)])
+            latest_video = youtube_creators.find_one({'channel_id': channel['channel_id']})
 
             # publishedat is not there
-            if latest_video['publishedAt'] is None:
+            if latest_video['lastPublishedAt'] is None:
                 latest_video = None
 
         except:
@@ -37,7 +37,7 @@ def get_yt_videos():
             latest_video = None
         if latest_video is not None:
             print(4)
-            last_timestamp = datetime.strptime(latest_video['publishedAt'], "%Y-%m-%d %H:%M:%S")
+            last_timestamp = datetime.strptime(latest_video['lastPublishedAt'], "%Y-%m-%d %H:%M:%S")
         else:
             print(5)
             last_timestamp = datetime.now().replace(microsecond=0) - timedelta(days=10)
@@ -76,13 +76,13 @@ def get_yt_videos():
                     youtube_videos.insert_one({'channel_id': channel['channel_id'], 'video_id': video['videoId'], "timestamp": timestamp})
             dt = datetime.strptime(videos[0]['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
             timestamp = datetime.strftime(dt, "%Y-%m-%d %H:%M:%S")
-            youtube_following.update_one({'channel_id': channel['channel_id']}, {'$set': {'publishedAt': timestamp}})
+            youtube_creators.update_one({'channel_id': channel['channel_id']}, {'$set': {'lastPublishedAt': timestamp}})
         else:
             continue
 
 
 if __name__ == '__main__':
-    get_yt_videos()
+    scrape_and_update()
     #set up scheduler
     # schedule.every(1).minutes.do(get_yt_videos)
     # while True:
