@@ -48,3 +48,25 @@
 2023-11-02 13:05:59,809 - auth - INFO - User janil created
 2023-11-02 13:43:25,398 - auth - INFO - User janil logged in
 2023-11-02 13:48:57,161 - auth - INFO - User janil logged in
+2023-11-02 15:14:36,203 - auth - INFO - User dev created
+2023-11-02 15:26:53,171 - auth - INFO - User dev logged in
+2023-11-02 16:01:21,940 - auth - INFO - User dev logged in
+2023-11-02 16:03:52,400 - auth - INFO - User dev logged out
+2023-11-02 16:55:08,987 - auth - INFO - User test created
+2023-11-02 16:58:27,613 - auth - INFO - User test logged out
+2023-11-02 18:10:32,823 - auth - INFO - User dev logged in
+2023-11-02 18:11:35,886 - auth - INFO - User admin logged in
+2023-11-02 18:14:15,034 - auth - INFO - User devtest created
+2023-11-02 18:14:38,055 - auth - INFO - User devtest logged in
+2023-11-02 18:18:23,629 - auth - INFO - User dev logged in
+2023-11-02 18:19:25,977 - auth - INFO - User admin logged in
+2023-11-02 18:20:21,018 - auth - INFO - User admin logged in
+2023-11-02 18:20:52,659 - auth - INFO - User admin logged in
+2023-11-02 18:24:08,810 - auth - INFO - User admin logged in
+2023-11-11 10:14:40,052 - auth - INFO - User devp created
+2023-11-11 10:23:03,962 - auth - INFO - User devtest created
+2023-11-11 10:27:54,102 - auth - INFO - User devp logged out
+2023-11-11 10:28:09,934 - auth - INFO - User devtest logged in
+2023-11-11 10:35:25,413 - auth - INFO - User devtest logged in
+2023-11-11 10:39:41,049 - auth - INFO - User devtest logged out
+2023-11-11 11:24:48,028 - auth - INFO - User devtest logged in

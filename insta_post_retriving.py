@@ -85,7 +85,7 @@ def scrape_data(username):
         db_name = MONGO_DB
         db = client.get_database(db_name)
 
-        instagram_following = db['instagram_following']
+        instagram_creators = db['instagram_creators']
         instagram_posts = db['instagram_posts']
 
         print(1)
@@ -94,7 +94,7 @@ def scrape_data(username):
         profile = instaloader.Profile.from_username(L.context, username)
         try:
             print("a")
-            latest_post = instagram_following.find_one({"username":username}, sort=[('publishedAt', pymongo.DESCENDING)])
+            latest_post = instagram_creators.find_one({"username":username}, sort=[('publishedAt', pymongo.DESCENDING)])
             print(latest_post)
             if latest_post['timestamp'] is  None:
                 latest_post = None
@@ -136,7 +136,7 @@ def scrape_data(username):
                 else:
                     print("+")
                     instagram_posts.insert_one({"username": username, "shortcode": post.shortcode, "timestamp": post_date_str})
-            instagram_following.update_one({'username': username}, {'$set': {'timestamp': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
+            instagram_creators.update_one({'username': username}, {'$set': {'timestamp': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
 
 
 if __name__ == '__main__':

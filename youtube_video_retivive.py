@@ -83,7 +83,7 @@ def scrape_and_update():
 
 if __name__ == '__main__':
     scrape_and_update()
-    #set up scheduler
+    # set up scheduler
     # schedule.every(1).minutes.do(get_yt_videos)
     # while True:
     #     schedule.run_pending()
