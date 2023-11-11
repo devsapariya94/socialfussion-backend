@@ -101,9 +101,14 @@ def token_required(f):
 def protected(current_user):
     return jsonify({'message': 'This is a protected route'}), 200
 
+@protectedRoute.route('/test')
+def test():
+    return jsonify({'message': 'This is a test route'}), 200
+
 @protectedRoute.route('/')
 def hello():
-    return "hello"
+    return jsonify({'message': 'Hello World'}), 200
+    
    
 @protectedRoute.route('/addinstafollowing', methods=['POST'])
 @token_required
