@@ -38,13 +38,13 @@ login_manager = LoginManager(app)
 
 
 #set up auth logger
-logger = logging.getLogger('auth')
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('auth.log')
-fh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+# logger = logging.getLogger('auth')
+# logger.setLevel(logging.DEBUG)
+# fh = logging.FileHandler('auth.log')
+# fh.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# fh.setFormatter(formatter)
+# logger.addHandler(fh)
 
 def generate_token(user):
     payload = {
@@ -113,7 +113,7 @@ def register():
 
     #insert the user
     users.insert_one(new_user)
-    logger.info(f'User {username} created')
+    # logger.info(f'User {username} created')
     token = generate_token(new_user)
     return jsonify({'message': 'User created', 'token': token}), 200
 
@@ -133,7 +133,7 @@ def login():
 
     if users.find_one({'username': username, 'password': password}):
         token = generate_token(users.find_one({'username': username}))
-        logger.info(f'User {username} logged in')
+        # logger.info(f'User {username} logged in')
         return jsonify({'message': 'User logged in', 'token': token}), 200
     else:
         return jsonify({'error': 'Incorrect password'}), 400
@@ -158,7 +158,7 @@ def logout(current_user):
         }
         
 
-        logger.info(f'User {current_user} logged out')
+        # logger.info(f'User {current_user} logged out')
 
         return jsonify({'message': 'User logged out'}), 200
     except jwt.ExpiredSignatureError:

@@ -51,13 +51,13 @@ instagram_creators = db['instagram_creators']
 users = db['users']
 
 # setup logger
-logger = logging.getLogger('follow_unfollow_logger')
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('protected.log')
-fh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-logger.addHandler(fh)
+# logger = logging.getLogger('follow_unfollow_logger')
+# logger.setLevel(logging.DEBUG)
+# fh = logging.FileHandler('protected.log')
+# fh.setLevel(logging.DEBUG)
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# fh.setFormatter(formatter)
+# logger.addHandler(fh)
 
 #setup email 
 # sender_email = "pdfdummy5@gmail.com"
@@ -101,7 +101,9 @@ def token_required(f):
 def protected(current_user):
     return jsonify({'message': 'This is a protected route'}), 200
 
-
+@protectedRoute.route('/')
+def hello():
+    return "hello"
    
 @protectedRoute.route('/addinstafollowing', methods=['POST'])
 @token_required
@@ -130,7 +132,7 @@ def insta_following(current_user):
         thread = threading.Thread(target=scrape_data, args=(username,))
         thread.start()
 
-        logger.info(f'User {current_user} added {username} to instagram following')
+        # logger.info(f'User {current_user} added {username} to instagram following')
         return jsonify({'message': 'Instagram user added to following'}), 200
 
     except Exception as e:
@@ -169,7 +171,7 @@ def youtube_following(current_user):
             thread = threading.Thread(target=scrape_and_update)
             thread.start()
             
-        logger.info(f'User {current_user} added {channel_name} to youtube following')
+        # logger.info(f'User {current_user} added {channel_name} to youtube following')
         #start the thread to scrape the videos
         # thread = threading.Thread(target=scrape_and_update)
         # thread.start()
