@@ -28,7 +28,7 @@ instaloader
 itsdangerous
 Jinja2
 jwcrypto
-jwt
+pyjwt
 kiwisolver
 MarkupSafe
 matplotlib
