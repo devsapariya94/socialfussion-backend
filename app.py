@@ -15,5 +15,7 @@ app.register_blueprint(instroute)
 app.register_blueprint(ytroute)
 app.register_blueprint(authRoute)
 app.register_blueprint(protectedRoute)
-app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
