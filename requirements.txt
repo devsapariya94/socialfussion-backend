@@ -33,14 +33,16 @@ kiwisolver
 MarkupSafe
 matplotlib
 numpy
+packaging
 Pillow
 protobuf
 pyasn1
 pyasn1-modules
+pycparser
 pymongo
 pyparsing
 python-dateutil
-python-decoup
+python-decouple
 python-dotenv
 python-jwt
 requests
