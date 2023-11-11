@@ -13,15 +13,15 @@ from insta_post_retriving import scrape_data
 import threading
 import logging
 from datetime import datetime
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-from fpdf import FPDF
+# import smtplib
+# from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
+# from email.mime.application import MIMEApplication
+# import numpy as np
+# import matplotlib
+# matplotlib.use('Agg')
+# import matplotlib.pyplot as plt
+# from fpdf import FPDF
 
 
 
@@ -60,16 +60,16 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 #setup email 
-sender_email = "pdfdummy5@gmail.com"
-sender_password = "xeat hkem vijr hyna"
-smtp_server = "smtp.gmail.com"
-smtp_port = 587
+# sender_email = "pdfdummy5@gmail.com"
+# sender_password = "xeat hkem vijr hyna"
+# smtp_server = "smtp.gmail.com"
+# smtp_port = 587
 
 
 #temp db
-mongo_client2 = pymongo.MongoClient('mongodb+srv://soni3112chitt:1234567890@cluster0.lnv9sw0.mongodb.net/')
-db2 = mongo_client2['project1']
-login_logout_collection = db2['login_logout_data']
+# mongo_client2 = pymongo.MongoClient('mongodb+srv://soni3112chitt:1234567890@cluster0.lnv9sw0.mongodb.net/')
+# db2 = mongo_client2['project1']
+# login_logout_collection = db2['login_logout_data']
     
 
 def token_required(f):
@@ -268,178 +268,178 @@ def youtube_videos(current_user):
     return jsonify({'all_youtube_videos': main}), 200
 
 
-def get_login_logout_data(user_id):
-    data = login_logout_collection.find({'user_id': int(user_id)})
-    data_list = list(data)
-    print("Login Logout Data:", data_list)  # Add this line to print the retrieved data
-    return data_list
+# def get_login_logout_data(user_id):
+#     data = login_logout_collection.find({'user_id': int(user_id)})
+#     data_list = list(data)
+#     print("Login Logout Data:", data_list)  # Add this line to print the retrieved data
+#     return data_list
 
 
 
-def generate_heatmap_pdf(login_logout_data, output_file="heatmap.png"):
-    # Extract day of the week and hour of the day from MongoDB login times
-    login_times = [row['login_time'] for row in login_logout_data]
-    login_times = [datetime.strptime(login_time, '%Y-%m-%d %H:%M:%S') for login_time in login_times]
+# def generate_heatmap_pdf(login_logout_data, output_file="heatmap.png"):
+#     # Extract day of the week and hour of the day from MongoDB login times
+#     login_times = [row['login_time'] for row in login_logout_data]
+#     login_times = [datetime.strptime(login_time, '%Y-%m-%d %H:%M:%S') for login_time in login_times]
 
-    day_of_week = [login_time.weekday() for login_time in login_times]
-    hour_of_day = [login_time.hour for login_time in login_times]
+#     day_of_week = [login_time.weekday() for login_time in login_times]
+#     hour_of_day = [login_time.hour for login_time in login_times]
 
-    # Create a 2D histogram (heatmap)
-    heatmap, xedges, yedges = np.histogram2d(day_of_week, hour_of_day, bins=[7, 24])
-    extent = [0, 7, 0, 24]
+#     # Create a 2D histogram (heatmap)
+#     heatmap, xedges, yedges = np.histogram2d(day_of_week, hour_of_day, bins=[7, 24])
+#     extent = [0, 7, 0, 24]
 
-    print("Day of Week:", day_of_week)  # Add this line to print day of the week
-    print("Hour of Day:", hour_of_day)  # Add this line to print the hour of the day
+#     print("Day of Week:", day_of_week)  # Add this line to print day of the week
+#     print("Hour of Day:", hour_of_day)  # Add this line to print the hour of the day
 
-    # Create a heatmap of user activity
-    plt.figure(figsize=(12, 6))
-    plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='YlGnBu')
-    plt.colorbar()
-    plt.xticks(range(7), ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
-    plt.xlabel("Day of the Week")
-    plt.ylabel("Hour of the Day")
-    plt.title("Heatmap of User Activity")
-    plt.savefig(output_file)  # Save the heatmap as the specified output file
+#     # Create a heatmap of user activity
+#     plt.figure(figsize=(12, 6))
+#     plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='YlGnBu')
+#     plt.colorbar()
+#     plt.xticks(range(7), ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+#     plt.xlabel("Day of the Week")
+#     plt.ylabel("Hour of the Day")
+#     plt.title("Heatmap of User Activity")
+#     plt.savefig(output_file)  # Save the heatmap as the specified output file
 
 
-def generate_combined_analysis_pdf(user_id):
-    login_logout_data = get_login_logout_data(user_id)
+# def generate_combined_analysis_pdf(user_id):
+#     login_logout_data = get_login_logout_data(user_id)
 
-    if not login_logout_data:
-        return  # No data found for the user, so no need to generate a PDF
+#     if not login_logout_data:
+#         return  # No data found for the user, so no need to generate a PDF
 
-    # Accumulate login times and session durations for all entries
-    login_times = []
-    session_durations = []
+#     # Accumulate login times and session durations for all entries
+#     login_times = []
+#     session_durations = []
 
-    for entry in login_logout_data:
-        login_time = datetime.strptime(entry['login_time'], '%Y-%m-%d %H:%M:%S')
-        logout_time = datetime.strptime(entry['logout_time'], '%Y-%m-%d %H:%M:%S')
+#     for entry in login_logout_data:
+#         login_time = datetime.strptime(entry['login_time'], '%Y-%m-%d %H:%M:%S')
+#         logout_time = datetime.strptime(entry['logout_time'], '%Y-%m-%d %H:%M:%S')
        
-        if login_time <= logout_time:
-            session_duration = (logout_time - login_time).total_seconds() / 3600
-            login_times.append(login_time)
-            session_durations.append(session_duration)
+#         if login_time <= logout_time:
+#             session_duration = (logout_time - login_time).total_seconds() / 3600
+#             login_times.append(login_time)
+#             session_durations.append(session_duration)
         
 
-    if not login_times or not session_durations:
-        return  # No valid session data to plot
+#     if not login_times or not session_durations:
+#         return  # No valid session data to plot
 
-    # Create a PDF document
-    pdf = FPDF()
-    pdf.add_page()
+#     # Create a PDF document
+#     pdf = FPDF()
+#     pdf.add_page()
 
-    # Set the background color to hex color #001B37 (dark blue)
-    pdf.set_fill_color(0, 27, 55)  # Dark blue color
-    pdf.rect(0, 0, 210, 297, "F")  # Filled rectangle for the background
+#     # Set the background color to hex color #001B37 (dark blue)
+#     pdf.set_fill_color(0, 27, 55)  # Dark blue color
+#     pdf.rect(0, 0, 210, 297, "F")  # Filled rectangle for the background
 
-    # Add a sample logo image to the top left corner
-    pdf.image("logo.png", x=10, y=10, w=50)  # Adjust the x, y, and w values as needed
+#     # Add a sample logo image to the top left corner
+#     pdf.image("logo.png", x=10, y=10, w=50)  # Adjust the x, y, and w values as needed
 
-    # Set font and size for description text
-    pdf.set_font("Arial", size=12)
-    pdf.set_text_color(255, 255, 255)  # Text color (white)
+#     # Set font and size for description text
+#     pdf.set_font("Arial", size=12)
+#     pdf.set_text_color(255, 255, 255)  # Text color (white)
 
-    # Calculate the coordinates to center the description text
-    text_x = (210 - pdf.get_string_width("User Activity Over Time")) / 2
-    pdf.set_x(text_x)
-    pdf.cell(200, 10, "User Activity Over Time", ln=True, align="C")
+#     # Calculate the coordinates to center the description text
+#     text_x = (210 - pdf.get_string_width("User Activity Over Time")) / 2
+#     pdf.set_x(text_x)
+#     pdf.cell(200, 10, "User Activity Over Time", ln=True, align="C")
 
-    # Add description for the user activity chart
-    pdf.multi_cell(0, 10, "This chart shows the user's activity over time, including login and logout times.", align="L")
-    pdf.ln(10)  # Move to the next line
+#     # Add description for the user activity chart
+#     pdf.multi_cell(0, 10, "This chart shows the user's activity over time, including login and logout times.", align="L")
+#     pdf.ln(10)  # Move to the next line
 
-    # Call the function to generate the user activity time series line chart
-    generate_user_activity_pdf(pdf, login_times, session_durations)
+#     # Call the function to generate the user activity time series line chart
+#     generate_user_activity_pdf(pdf, login_times, session_durations)
 
-    # Calculate the coordinates to center the graph
-    graph_x = (210 - 190) / 2
-    pdf.image("user_activity_chart.png", x=graph_x, y=40, w=190)
+#     # Calculate the coordinates to center the graph
+#     graph_x = (210 - 190) / 2
+#     pdf.image("user_activity_chart.png", x=graph_x, y=40, w=190)
 
-    # Add a border to the page
-    pdf.set_draw_color(255, 255, 255)  # Border color (white)
-    pdf.set_line_width(1)  # Border line width
-    pdf.rect(5.0, 5.0, 200.0, 287.0)  # Rectangle coordinates and dimensions
+#     # Add a border to the page
+#     pdf.set_draw_color(255, 255, 255)  # Border color (white)
+#     pdf.set_line_width(1)  # Border line width
+#     pdf.rect(5.0, 5.0, 200.0, 287.0)  # Rectangle coordinates and dimensions
 
-    # Generate the heatmap and describe it
-    generate_heatmap_pdf(login_logout_data, output_file="heatmap.png")
-    pdf.add_page()
-    pdf.set_fill_color(0, 27, 55)  # Dark blue color
-    pdf.rect(0, 0, 210, 297, "F")
-    pdf.multi_cell(0, 10, "This heatmap illustrates the user's activity over the course of a week, highlighting the busiest times of each day.", align="L")
-    pdf.image("heatmap.png", x=10, y=10, w=190)
-    pdf.set_font("Arial", size=12)
-    pdf.set_text_color(255, 255, 255)
+#     # Generate the heatmap and describe it
+#     generate_heatmap_pdf(login_logout_data, output_file="heatmap.png")
+#     pdf.add_page()
+#     pdf.set_fill_color(0, 27, 55)  # Dark blue color
+#     pdf.rect(0, 0, 210, 297, "F")
+#     pdf.multi_cell(0, 10, "This heatmap illustrates the user's activity over the course of a week, highlighting the busiest times of each day.", align="L")
+#     pdf.image("heatmap.png", x=10, y=10, w=190)
+#     pdf.set_font("Arial", size=12)
+#     pdf.set_text_color(255, 255, 255)
     
 
-    # Save the combined analysis PDF
-    pdf.output("analysis.pdf")
+#     # Save the combined analysis PDF
+#     pdf.output("analysis.pdf")
 
 
 
-def generate_user_activity_pdf(pdf, login_times, session_durations):
-    # Create a time series line chart for session durations
-    plt.figure(figsize=(12, 6))
-    plt.plot(login_times, session_durations)
-    plt.xlabel("Time")
-    plt.ylabel("Session Duration (hours)")
-    plt.title("User Activity Over Time")
+# def generate_user_activity_pdf(pdf, login_times, session_durations):
+#     # Create a time series line chart for session durations
+#     plt.figure(figsize=(12, 6))
+#     plt.plot(login_times, session_durations)
+#     plt.xlabel("Time")
+#     plt.ylabel("Session Duration (hours)")
+#     plt.title("User Activity Over Time")
     
-    # Save the chart to an image file
-    plt.savefig("user_activity_chart.png")
+#     # Save the chart to an image file
+#     plt.savefig("user_activity_chart.png")
 
 
-@protectedRoute.route('/analysis', methods=['GET'])
-@token_required
-def analysis(current_user):
-    users_collection = db2['users']
-    user_id = 1
-    request_pdf = True
+# @protectedRoute.route('/analysis', methods=['GET'])
+# @token_required
+# def analysis(current_user):
+#     users_collection = db2['users']
+#     user_id = 1
+#     request_pdf = True
 
-    if user_id:
-        user = users.find_one({"username": current_user})
+#     if user_id:
+#         user = users.find_one({"username": current_user})
 
-        if user:
-            user_email = user['email']
+#         if user:
+#             user_email = user['email']
 
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            logging.info(f"{timestamp} - User with ID {user_id} (Email: {user_email}) made a request. Request successful.")
-            result = f"Request logged for user ID: {user_id}"
+#             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#             logging.info(f"{timestamp} - User with ID {user_id} (Email: {user_email}) made a request. Request successful.")
+#             result = f"Request logged for user ID: {user_id}"
 
-            if request_pdf:
-                generate_combined_analysis_pdf(user_id)
+#             if request_pdf:
+#                 generate_combined_analysis_pdf(user_id)
 
-                subject = "Combined PDF Attachment"
-                body = "Hello, please find the attached combined PDF."
+#                 subject = "Combined PDF Attachment"
+#                 body = "Hello, please find the attached combined PDF."
 
-                message = MIMEMultipart()
-                message["From"] = sender_email
-                message["To"] = user_email
-                message["Subject"] = subject
+#                 message = MIMEMultipart()
+#                 message["From"] = sender_email
+#                 message["To"] = user_email
+#                 message["Subject"] = subject
 
-                message.attach(MIMEText(body, "plain"))
+#                 message.attach(MIMEText(body, "plain"))
 
-                # Attach the combined PDF
-                with open("analysis.pdf", "rb") as pdf_file:
-                    attach = MIMEApplication(pdf_file.read(), _subtype="pdf")
-                    attach.add_header("Content-Disposition", 'attachment; filename="combined_analysis.pdf"')
-                    message.attach(attach)
+#                 # Attach the combined PDF
+#                 with open("analysis.pdf", "rb") as pdf_file:
+#                     attach = MIMEApplication(pdf_file.read(), _subtype="pdf")
+#                     attach.add_header("Content-Disposition", 'attachment; filename="combined_analysis.pdf"')
+#                     message.attach(attach)
 
-                server = smtplib.SMTP(smtp_server, smtp_port)
-                server.starttls()
-                server.login(sender_email, sender_password)
-                server.sendmail(sender_email, user_email, message.as_string())
-                server.quit()
+#                 server = smtplib.SMTP(smtp_server, smtp_port)
+#                 server.starttls()
+#                 server.login(sender_email, sender_password)
+#                 server.sendmail(sender_email, user_email, message.as_string())
+#                 server.quit()
 
-                result += " Combined PDF sent to user."
-            msg = "email sent"
-            return jsonify({'message': msg})
+#                 result += " Combined PDF sent to user."
+#             msg = "email sent"
+#             return jsonify({'message': msg})
 
-        else:
-            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            logging.info(f"{timestamp} - User with ID {user_id} made a request. User not found in the database.")
-            result = "User ID not found in the database"
-            return jsonify({"message":result}) # Return a 404 error response
+#         else:
+#             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+#             logging.info(f"{timestamp} - User with ID {user_id} made a request. User not found in the database.")
+#             result = "User ID not found in the database"
+#             return jsonify({"message":result}) # Return a 404 error response
 
-    else:
-        return make_response("User ID not provided in the request", 400)  # Return a 400 error response
+#     else:
+#         return make_response("User ID not provided in the request", 400)  # Return a 400 error response

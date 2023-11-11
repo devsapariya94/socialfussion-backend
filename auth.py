@@ -1,5 +1,4 @@
 from flask import Flask, Blueprint, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import dotenv
 import os
