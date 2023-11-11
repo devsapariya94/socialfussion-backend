@@ -33,7 +33,6 @@ kiwisolver
 MarkupSafe
 matplotlib
 numpy
-packagin
 Pillow
 protobuf
 pyasn1
