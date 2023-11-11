@@ -59,3 +59,4 @@ packaging
 pycparser
 python-decouple
 rsa
+gunicorn
