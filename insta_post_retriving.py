@@ -10,6 +10,11 @@ MONGO_USERNAME = config('MONGO_USERNAME')
 MONGO_PASSWORD = config('MONGO_PASSWORD')
 MONGO_URI = config('MONGO_URI')
 MONGO_DB = config('MONGO_DB')
+INSTAGRAM_USERNAME = config('INSTAGRAM_USERNAME')
+INSTAGRAM_PASSWORD = config('INSTAGRAM_PASSWORD')
+
+L = instaloader.Instaloader()
+L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
 
 # Define a function to run the scraping and updating process
 def scrape_and_update():
@@ -27,9 +32,7 @@ def scrape_and_update():
         print(1)
         username = username_record['username']
         print(username)
-        L = instaloader.Instaloader()
         profile = instaloader.Profile.from_username(L.context, username)
-
         try:
             print("a")
             latest_post = instagram_creators.find_one({"username":username})
@@ -65,6 +68,7 @@ def scrape_and_update():
 
         if post_list:
             print(3)
+            document_to_insert = []
             for post in post_list:
                 print("*")
                 post_date_str = post.date_utc.strftime("%Y-%m-%d %H:%M:%S")
@@ -73,7 +77,10 @@ def scrape_and_update():
                     continue
                 else:
                     print("+")
-                    instagram_posts.insert_one({"username": username, "shortcode": post.shortcode, "timestamp": post_date_str})
+                    document_to_insert.append({"username": username, "shortcode": post.shortcode, "timestamp": post_date_str})
+
+            if document_to_insert:
+                instagram_posts.insert_many(document_to_insert)
             instagram_creators.update_one({'username': username}, {'$set': {'lastPublishedAt': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
 
 
@@ -90,7 +97,6 @@ def scrape_data(username):
 
         print(1)
         print(username)
-        L = instaloader.Instaloader()
         profile = instaloader.Profile.from_username(L.context, username)
         try:
             print("a")
@@ -108,7 +114,7 @@ def scrape_data(username):
             last_timestamp = datetime.strptime(last_timestamp, "%Y-%m-%d %H:%M:%S")
         else:
             print("d")
-            last_timestamp = datetime.now().replace(microsecond=0) - timedelta(days=10)
+            last_timestamp = datetime.now().replace(microsecond=0) - timedelta(days=30)
 
         print(2)
         post_list = []
@@ -127,6 +133,7 @@ def scrape_data(username):
 
         if post_list:
             print(3)
+            document_to_insert = []
             for post in post_list:
                 print("*")
                 post_date_str = post.date_utc.strftime("%Y-%m-%d %H:%M:%S")
@@ -135,7 +142,11 @@ def scrape_data(username):
                     continue
                 else:
                     print("+")
-                    instagram_posts.insert_one({"username": username, "shortcode": post.shortcode, "timestamp": post_date_str})
+                    document_to_insert.append({"username": username, "shortcode": post.shortcode, "timestamp": post_date_str})
+
+            if document_to_insert:
+                instagram_posts.insert_many(document_to_insert)
+
             instagram_creators.update_one({'username': username}, {'$set': {'timestamp': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
 
 

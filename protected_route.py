@@ -24,7 +24,6 @@ from datetime import datetime
 # from fpdf import FPDF
 
 
-
 protectedRoute = Blueprint('protectedRoute', __name__)
 
 
@@ -34,6 +33,8 @@ MONGO_USERNAME = os.getenv('MONGO_USERNAME')
 MONGO_PASSWORD = os.getenv('MONGO_PASSWORD')
 APP_SECRET_KEY = os.getenv('APP_SECRET_KEY')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+INSTAGRAM_USERNAME = os.getenv("INSTAGRAM_USERNAME")
+INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD")
 # Setup MongoDB connection and authenticate
 
 # client = MongoClient('localhost', 27017)
@@ -42,6 +43,10 @@ client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{
 db_name= MONGO_DB
 db = client.get_database(db_name)
 
+
+
+loader = instaloader.Instaloader() 
+loader.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
 #set up collections
 blacklist_token = db['blacklist_token']
 instagram_following = db['instagram_following']
@@ -119,7 +124,7 @@ def insta_following(current_user):
     # try:
         print("1")
         print(username)
-        loader = instaloader.Instaloader()
+
         profile = instaloader.Profile.from_username(loader.context, username)
         # add to the database
        
