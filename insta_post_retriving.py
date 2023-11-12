@@ -14,7 +14,7 @@ INSTAGRAM_USERNAME = config('INSTAGRAM_USERNAME')
 INSTAGRAM_PASSWORD = config('INSTAGRAM_PASSWORD')
 
 L = instaloader.Instaloader()
-L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+# L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
 
 # Define a function to run the scraping and updating process
 def scrape_and_update():

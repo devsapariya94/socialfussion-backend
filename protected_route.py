@@ -46,7 +46,7 @@ db = client.get_database(db_name)
 
 
 loader = instaloader.Instaloader() 
-loader.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+# loader.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
 #set up collections
 blacklist_token = db['blacklist_token']
 instagram_following = db['instagram_following']
