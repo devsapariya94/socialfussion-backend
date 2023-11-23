@@ -10,6 +10,7 @@ from googleapiclient.discovery import build
 from datetime import datetime
 from youtube_video_retivive import scrape_and_update
 from insta_post_retriving import scrape_data
+from insta_post_retriving import scrap_data2
 import threading
 import logging
 from datetime import datetime
@@ -45,8 +46,7 @@ db = client.get_database(db_name)
 
 
 
-loader = instaloader.Instaloader() 
-# loader.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
+
 #set up collections
 blacklist_token = db['blacklist_token']
 instagram_following = db['instagram_following']
@@ -120,11 +120,10 @@ def hello():
 def insta_following(current_user):
         request_data = request.get_json()
         username = request_data['username']
-    #check if user exists
     # try:
         print("1")
         print(username)
-
+        loader = instaloader.Instaloader() 
         profile = instaloader.Profile.from_username(loader.context, username)
         # add to the database
        
@@ -133,15 +132,15 @@ def insta_following(current_user):
             return jsonify({'error': 'User is already following'}), 400
         
         print("2")
-        instagram_following.insert_one({'username': username, 'user_id': current_user})
+        
         #if username not in instagram_creators then add it
         if not instagram_creators.find_one({'username': username}): 
             instagram_creators.insert_one({'username': username})
         print("3")
         #start the thread to scrape the posts
-        thread = threading.Thread(target=scrape_data, args=(username,))
+        thread = threading.Thread(target=scrap_data2, args=(username,))
         thread.start()
-
+        instagram_following.insert_one({'username': username, 'user_id': current_user})
         # logger.info(f'User {current_user} added {username} to instagram following')
         return jsonify({'message': 'Instagram user added to following'}), 200
 

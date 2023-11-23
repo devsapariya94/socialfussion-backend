@@ -5,6 +5,8 @@ import schedule
 import time
 from datetime import datetime, timedelta
 from decouple import config  
+from apify_client import ApifyClient
+import json
 
 MONGO_USERNAME = config('MONGO_USERNAME') 
 MONGO_PASSWORD = config('MONGO_PASSWORD')
@@ -12,6 +14,7 @@ MONGO_URI = config('MONGO_URI')
 MONGO_DB = config('MONGO_DB')
 INSTAGRAM_USERNAME = config('INSTAGRAM_USERNAME')
 INSTAGRAM_PASSWORD = config('INSTAGRAM_PASSWORD')
+APIFY_TOKEN = config('APIFY_TOKEN')
 
 L = instaloader.Instaloader()
 # L.login(INSTAGRAM_USERNAME, INSTAGRAM_PASSWORD)
@@ -84,8 +87,6 @@ def scrape_and_update():
             instagram_creators.update_one({'username': username}, {'$set': {'lastPublishedAt': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
 
 
-
-
 def scrape_data(username):
         client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
         # client = pymongo.MongoClient('mongodb://localhost:27017/')
@@ -149,7 +150,39 @@ def scrape_data(username):
 
             instagram_creators.update_one({'username': username}, {'$set': {'timestamp': post_list[0].date_utc.strftime("%Y-%m-%d %H:%M:%S")}})
 
+def scrap_data2(username):
+    client = pymongo.MongoClient(f'mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_URI}/')
+    # client = pymongo.MongoClient('mongodb://localhost:27017/')
+    db_name = MONGO_DB
+    db = client.get_database(db_name)
 
+    instagram_creators = db['instagram_creators']
+    instagram_posts = db['instagram_posts']
+
+    print(1)
+    print(username)
+    client = ApifyClient(token=APIFY_TOKEN)
+    input = {
+        "username": [username],
+        "resultsLimit": 2,
+    }
+    run = client.actor("apify/instagram-post-scraper").call(run_input=input)
+    temp = 0
+    
+    for post in client.dataset(run["defaultDatasetId"]).iterate_items():
+        shortcode = post['shortCode']
+        timestamp = post['timestamp']
+        dt_object = datetime.fromisoformat(timestamp[:-1])
+        dt_object = dt_object.replace(microsecond=0)
+        formatted_timestamp = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+        if temp == 0:
+            instagram_creators.update_one({'username': username}, {'$set': {'timestamp': formatted_timestamp}})
+            temp = 1
+        if instagram_posts.find_one({"shortcode": shortcode}):
+            continue
+        else:
+            instagram_posts.insert_one({"username": username, "shortcode": shortcode, "timestamp": formatted_timestamp})
+    
 if __name__ == '__main__':
     #set up scheduler
     # scheduler = schedule.Scheduler()
