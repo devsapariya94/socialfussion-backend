@@ -14,6 +14,8 @@ from insta_post_retriving import scrap_data2
 import threading
 import logging
 from datetime import datetime
+import requests
+import json
 # import smtplib
 # from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
@@ -118,25 +120,20 @@ def hello():
 @protectedRoute.route('/addinstafollowing', methods=['POST'])
 @token_required
 def insta_following(current_user):
-        request_data = request.get_json()
-        username = request_data['username']
-    # try:
-        print("1")
-        print(username)
-        loader = instaloader.Instaloader() 
-        profile = instaloader.Profile.from_username(loader.context, username)
-        # add to the database
-       
-        # if user is already following
-        if instagram_following.find_one({'username': username, 'user_id': current_user}):
-            return jsonify({'error': 'User is already following'}), 400
-        
-        print("2")
-        
-        #if username not in instagram_creators then add it
-        if not instagram_creators.find_one({'username': username}): 
-            instagram_creators.insert_one({'username': username})
-        print("3")
+    request_data = request.get_json()
+    username = request_data['username']
+    try:
+
+        header = {"User-Agent": "Instagram 219.0.0.12.117 Android"}
+        response = requests.get(f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}", headers=header)
+
+        print(response.json()["data"]["user"]["is_private"])
+        with open("data.json", "w") as outfile:
+            json.dump(response.json(), outfile)
+
+        if response.json()["data"]["user"]["is_private"]:
+            return jsonify({'error': 'This Account is private Account'}), 400
+
         #start the thread to scrape the posts
         thread = threading.Thread(target=scrap_data2, args=(username,))
         thread.start()
@@ -144,8 +141,8 @@ def insta_following(current_user):
         # logger.info(f'User {current_user} added {username} to instagram following')
         return jsonify({'message': 'Instagram user added to following'}), 200
 
-    # except Exception as e:
-    #     return jsonify({'error': 'Instagram user does not exist or it may be the private account'}), 400
+    except Exception as e:
+        return jsonify({'error': 'Instagram user does not exist or it may be the private account'}), 400
 
 @protectedRoute.route('/addyoutubefollowing', methods=['POST'])
 @token_required
