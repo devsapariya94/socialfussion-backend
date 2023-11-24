@@ -120,9 +120,9 @@ def hello():
 @protectedRoute.route('/addinstafollowing', methods=['POST'])
 @token_required
 def insta_following(current_user):
-    request_data = request.get_json()
-    username = request_data['username']
-    try:
+        request_data = request.get_json()
+        username = request_data['username']
+    # try:
 
         header = {"User-Agent": "Instagram 219.0.0.12.117 Android"}
         response = requests.get(f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}", headers=header)
@@ -141,8 +141,8 @@ def insta_following(current_user):
         # logger.info(f'User {current_user} added {username} to instagram following')
         return jsonify({'message': 'Instagram user added to following'}), 200
 
-    except Exception as e:
-        return jsonify({'error': 'Instagram user does not exist or it may be the private account'}), 400
+    # except Exception as e:
+        # return jsonify({'message': 'Instagram user does not exist or it may be the private account'}), 400
 
 @protectedRoute.route('/addyoutubefollowing', methods=['POST'])
 @token_required
