@@ -128,6 +128,9 @@ def insta_following(current_user):
         header = {"User-Agent": "Instagram 219.0.0.12.117 Android"}
         response = requests.get(f"https://www.instagram.com/api/v1/users/web_profile_info/?username={username}", headers=header)
         print(response)
+        print(11)
+        print(response.json())
+        print(22)
         print(response.json()["data"]["user"]["is_private"])
         with open("data.json", "w") as outfile:
             json.dump(response.json(), outfile)
